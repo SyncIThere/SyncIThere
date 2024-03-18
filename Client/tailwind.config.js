@@ -4,5 +4,9 @@ export default {
   theme: {
     extend: {},
   },
+  baseUrl: ".",
+  paths: {
+    "@/*": ["./src/*"],
+  },
   plugins: [],
 };
