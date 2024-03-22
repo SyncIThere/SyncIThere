@@ -16,8 +16,10 @@
     "add": "^2.0.6",
     "button": "^1.1.1",
     "init": "^0.1.2",
+    "native.js": "^0.0.3",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "rollup": "^4.13.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.28",
