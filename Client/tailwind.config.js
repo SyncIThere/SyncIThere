@@ -1,8 +1,17 @@
 /** @type {import('tailwindcss').Config} */
+
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        background: "#18191B",
+        interactive: "#2E3135",
+        border: "#363A3F",
+        solid: "#696E77",
+        text: "#EDEEF0",
+      },
+    },
   },
   baseUrl: ".",
   paths: {

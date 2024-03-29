@@ -1,12 +1,20 @@
-import Button from "./components/Button";
+import { ThemeProvider } from "@mui/material/styles";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import theme from "../theme";
+import Home from "./pages/Home";
 
-function App() {
+const App = () => {
   return (
     <div>
-      <h1>Welcome to My App</h1>
-      <Button />
+      <ThemeProvider theme={theme}>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Home />} />
+          </Routes>
+        </Router>
+      </ThemeProvider>
     </div>
   );
-}
+};
 
 export default App;
