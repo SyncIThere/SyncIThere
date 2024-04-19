@@ -9,13 +9,13 @@ router.post('/signup', signupUser);
 router.post('/login', loginUser);
 router.post('/logout', logoutUser);
 
-router.post('/sendFriendRequest/:id', protectRoute, sendFriendRequest);
-router.post('/acceptFriendRequest/:id', protectRoute, acceptFriendRequest);
-router.post('/rejectFriendRequest/:id', protectRoute, rejectFriendRequest);
-router.post('/unFriend/:id', protectRoute, unFriend);
+router.post('/sendFriendRequest/:name', protectRoute, sendFriendRequest);
+router.post('/acceptFriendRequest/:name', protectRoute, acceptFriendRequest);
+router.post('/rejectFriendRequest/:name', protectRoute, rejectFriendRequest);
+router.post('/unFriend/:name', protectRoute, unFriend);
 
 router.get('/getFriends', protectRoute, getFriends);
-router.get('/getCommonFriends/:id', protectRoute, getCommonFriends);
+router.get('/getCommonFriends/:name', protectRoute, getCommonFriends);
 router.get('/getFriendRequests', protectRoute, getFriendRequests);
 router.get('/getSentFriendRequests', protectRoute, getSentFriendRequests);
 

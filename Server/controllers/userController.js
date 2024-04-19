@@ -88,16 +88,13 @@ const logoutUser = (req, res) => {
 // send friend request
 const sendFriendRequest = async (req, res) => {
     try {
-        const { id } = req.params;
 
-        if (id.length !== 24) {
-            return res.status(400).json({ message: 'Invalid user id' });
-        }
+        const { name } = req.params;
 
-        const userToRequest = await User.findById(id);
+        const userToRequest = await User.findOne({ name });
         const currentUser = await User.findById(req.user._id.toString());
 
-        if (id === req.user._id.toString()) {
+        if (name === currentUser.name) {
             return res.status(400).json({ message: 'You cannot send request to yourself' });
         }
 
@@ -105,15 +102,15 @@ const sendFriendRequest = async (req, res) => {
             return res.status(400).json({ message: 'User not found' });
         }
 
-        const isAlreadyFriend = currentUser.friends.includes(id);
-        const isAlreadySentRequest = currentUser.sentRequests.includes(id);
-        const isAlreadyReceivedRequest = currentUser.friendRequests.includes(id);
+        const isAlreadyFriend = currentUser.friends.includes(userToRequest._id.toString());
+        const isAlreadySentRequest = currentUser.sentRequests.includes(userToRequest._id.toString());
+        const isAlreadyReceivedRequest = currentUser.friendRequests.includes(userToRequest._id.toString());
 
         if (isAlreadyFriend || isAlreadySentRequest || isAlreadyReceivedRequest) {
             return res.status(400).json({ message: 'Request already sent or already friends' });
         }
 
-        currentUser.sentRequests.push(id);
+        currentUser.sentRequests.push(userToRequest._id.toString());
         userToRequest.friendRequests.push(currentUser._id.toString());
 
         await currentUser.save();
@@ -130,16 +127,12 @@ const sendFriendRequest = async (req, res) => {
 // accept friend request
 const acceptFriendRequest = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { name } = req.params;
 
-        if (id.length !== 24) {
-            return res.status(400).json({ message: 'Invalid user id' });
-        }
-
-        const userToAccept = await User.findById(id);
+        const userToAccept = await User.findOne({ name });
         const currentUser = await User.findById(req.user._id.toString());
 
-        if (id === req.user._id.toString()) {
+        if (name === currentUser.name) {
             return res.status(400).json({ message: 'You cannot accept request from yourself' });
         }
 
@@ -147,21 +140,21 @@ const acceptFriendRequest = async (req, res) => {
             return res.status(400).json({ message: 'User not found' });
         }
 
-        const isAlreadyFriend = currentUser.friends.includes(id);
+        const isAlreadyFriend = currentUser.friends.includes(userToAccept._id.toString());
 
         if (isAlreadyFriend) {
             return res.status(400).json({ message: 'Already friends' });
         }
 
-        const isRequestReceived = currentUser.friendRequests.includes(id);
+        const isRequestReceived = currentUser.friendRequests.includes(userToAccept._id.toString());
         if (!isRequestReceived) {
             return res.status(400).json({ message: 'No request received' });
         }
 
-        currentUser.friends.push(id);
+        currentUser.friends.push(userToAccept._id);
         userToAccept.friends.push(currentUser._id);
 
-        currentUser.friendRequests = currentUser.friendRequests.filter(request => request.toString() !== id);
+        currentUser.friendRequests = currentUser.friendRequests.filter(request => request.toString() !== userToAccept._id.toString());
 
         await currentUser.save();
 
@@ -180,16 +173,12 @@ const acceptFriendRequest = async (req, res) => {
 // reject friend request
 const rejectFriendRequest = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { name } = req.params;
 
-        if (id.length !== 24) {
-            return res.status(400).json({ message: 'Invalid user id' });
-        }
-
-        const userToReject = await User.findById(id);
+        const userToReject = await User.findOne({ name });
         const currentUser = await User.findById(req.user._id.toString());
 
-        if (id === req.user._id.toString()) {
+        if (name === currentUser.name) {
             return res.status(400).json({ message: 'You cannot reject request from yourself' });
         }
 
@@ -197,12 +186,12 @@ const rejectFriendRequest = async (req, res) => {
             return res.status(400).json({ message: 'User not found' });
         }
 
-        const isRequestReceived = currentUser.friendRequests.includes(id);
+        const isRequestReceived = currentUser.friendRequests.includes(userToReject._id.toString());
         if (!isRequestReceived) {
             return res.status(400).json({ message: 'No request received' });
         }
 
-        currentUser.friendRequests = currentUser.friendRequests.filter(request => request.toString() !== id);
+        currentUser.friendRequests = currentUser.friendRequests.filter(request => request.toString() !== userToReject._id.toString());
         userToReject.sentRequests = userToReject.sentRequests.filter(request => request.toString() !== currentUser._id.toString());
 
         await currentUser.save();
@@ -219,16 +208,12 @@ const rejectFriendRequest = async (req, res) => {
 // unfriend
 const unFriend = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { name } = req.params;
 
-        if (id.length !== 24) {
-            return res.status(400).json({ message: 'Invalid user id' });
-        }
-
-        const userToUnFriend = await User.findById(id);
+        const userToUnFriend = await User.findOne({ name });
         const currentUser = await User.findById(req.user._id.toString());
 
-        if (id === req.user._id.toString()) {
+        if (name === currentUser.name) {
             return res.status(400).json({ message: 'You cannot unfriend yourself' });
         }
 
@@ -236,12 +221,12 @@ const unFriend = async (req, res) => {
             return res.status(400).json({ message: 'User not found' });
         }
 
-        const isAlreadyFriend = currentUser.friends.includes(id);
+        const isAlreadyFriend = currentUser.friends.includes(userToUnFriend._id.toString());
         if (!isAlreadyFriend) {
             return res.status(400).json({ message: 'Not friends' });
         }
 
-        currentUser.friends = currentUser.friends.filter(friend => friend.toString() !== id);
+        currentUser.friends = currentUser.friends.filter(friend => friend.toString() !== userToUnFriend._id.toString());
         userToUnFriend.friends = userToUnFriend.friends.filter(friend => friend.toString() !== currentUser._id.toString());
 
         await currentUser.save();
@@ -286,13 +271,9 @@ const getFriends = async (req, res) => {
 const getCommonFriends = async (req, res) => {
     try {
 
-        const { id } = req.params;
+        const { name } = req.params;
 
-        if (id.length !== 24) {
-            return res.status(400).json({ message: 'Invalid user id' });
-        }
-
-        const user = await User.findById(id).populate('friends');
+        const user = await User.findOne({ name }).populate('friends');
         const currentUser = await User.findById(req.user._id.toString()).populate('friends');
 
         if (!user || !currentUser) {
