@@ -10,6 +10,8 @@ export default {
         border: "#363A3F",
         solid: "#696E77",
         text: "#EDEEF0",
+
+        interactiveOpacity: "rgb(46, 49, 53, 0.2)",
       },
     },
   },
