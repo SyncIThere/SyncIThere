@@ -20,8 +20,26 @@
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Barlow Condensed', sans-serif;
+  color: #EDEEF0;
 }
 
-p, a, button {
+p, button, label, input, select, textarea{
   font-family: 'Roboto', sans-serif;
+  color: #EDEEF0;
+}
+
+
+body {
+  background-color: #18191B;
+}
+
+
+a {
+  font-family: 'Roboto', sans-serif;
+  color: #696E77;
+  text-decoration: underline;
+  margin-left: 5px;
+}
+input {
+  @apply  bg-interactive p-2 w-[250px] rounded-lg focus:border focus:border-border  focus:outline-none mt-1;
 }
