@@ -1,6 +1,7 @@
 
 import User from '../models/userModel.js';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import generateTokenAndSetCookie from '../utils/helpers/generateTokenAndSetCookie.js';
 
 // signup User
@@ -18,7 +19,8 @@ const signupUser = async (req, res) => {
         const newUser = new User({
             name,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            status: 'online',
         });
 
         await newUser.save();
@@ -59,6 +61,9 @@ const loginUser = async (req, res) => {
             return res.status(400).json({ message: 'Invalid username or password' });
         }
 
+        user.status = 'online';
+        await user.save();
+
         generateTokenAndSetCookie(user._id, res);
 
         res.status(200).json({
@@ -75,8 +80,21 @@ const loginUser = async (req, res) => {
 }
 
 // logout User
-const logoutUser = (req, res) => {
+const logoutUser = async(req, res) => {
     try {
+        const token = req.cookies.jwt;
+
+        if (!token) {
+            return res.status(400).json({ message: 'Already logged out' });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await User.findById(decoded.userId);
+
+        user.status = 'offline';
+        await user.save();
+
         res.clearCookie('jwt', "", { maxAge: 1 });
         res.status(200).json({ message: 'Logged out successfully' });
     } catch (error) {
@@ -240,6 +258,69 @@ const unFriend = async (req, res) => {
     }
 }
 
+// get user info
+const getUserInfo = async (req, res) => {
+    try {
+
+        const { name } = req.params;
+
+        const user = await User.findOne({ name }).populate('friends')
+
+        if (!user) {
+            return res.status(400).json({ message: 'User not found' });
+        }
+
+        const currentUser = await User.findById(req.user._id.toString());
+
+        if (user._id.toString() === currentUser._id.toString()) {
+            user.password = undefined;
+
+            return res.status(200).json(user);
+        }
+
+        const isFriend = currentUser.friends.includes(user._id.toString());
+
+        console.log(isFriend);
+        if (isFriend) {
+            user.email = undefined;
+            user.password = undefined;
+            const commonFriends = [...user.friends].filter(friend => currentUser.friends.map(friend => friend._id.toString()).includes(friend._id.toString()));
+            commonFriends.forEach(friend => {
+                friend.email = undefined;
+                friend.friends = undefined;
+                friend.friendRequests = undefined;
+                friend.sentRequests = undefined;
+                friend.password = undefined;
+            });
+            console.log(commonFriends);
+
+            user.friends = commonFriends;
+
+            user.friendRequests = undefined;
+            user.sentRequests = undefined;
+
+
+            return res.status(200).json(user);
+
+        }
+
+        user.email = undefined;
+        user.friends = undefined;
+        user.friendRequests = undefined;
+        user.sentRequests = undefined;
+        user.password = undefined;
+
+        res.status(200).json(user);
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+        console.error(error);
+    }
+
+}
+
+
+
 // get friends
 const getFriends = async (req, res) => {
     try {
@@ -339,7 +420,4 @@ const getSentFriendRequests = async (req, res) => {
     }
 }
 
-
-
-export { signupUser, loginUser, logoutUser, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, unFriend, getFriends, getCommonFriends, getFriendRequests, getSentFriendRequests };
-
+export { signupUser, loginUser, logoutUser, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, unFriend, getUserInfo, getFriends, getCommonFriends, getFriendRequests, getSentFriendRequests };
