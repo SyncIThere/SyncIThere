@@ -278,7 +278,6 @@ const removeUserFromGroup = async (req, res) => {
     }
 }
 
-
 // Next to clean up the code, we can create a function to check if the user is the owner of the group or not.
 const quitGroup = async (req, res) => {
     try {

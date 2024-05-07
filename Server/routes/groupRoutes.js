@@ -16,6 +16,3 @@ router.post('/removeUserFromGroup/:id', protectRoute, removeUserFromGroup);
 router.post('/quitGroup/:id', protectRoute, quitGroup);
 
 export default router;
-
-
-

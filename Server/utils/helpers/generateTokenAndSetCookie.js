@@ -9,7 +9,7 @@ const generateTokenAndSetCookie = (userId, res) => {
     res.cookie('jwt', token, {
         httpOnly: true, // to disable access to the cookie via client side js
         maxAge: 15 * 24 * 60 * 60 * 1000, // cookie will expire in 15 days
-        sameSite:'strict', // CSRF protection
+        sameSite: 'strict', // CSRF protection
     });
 
     return token;
@@ -17,4 +17,3 @@ const generateTokenAndSetCookie = (userId, res) => {
 }
 
 export default generateTokenAndSetCookie;
-

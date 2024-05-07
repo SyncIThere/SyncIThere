@@ -54,7 +54,6 @@ const userSchema = mongoose.Schema({
         type: String,
         default: 'offline',
     },
-
 }, {
     timestamps: true,
 });
