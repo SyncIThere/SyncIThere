@@ -471,7 +471,14 @@ const getMessages = async (req, res) => {
             return res.status(400).json({ message: 'You are not in the group' });
         }
 
-        let messages = await Message.find({ _id: { $in: group.messages } }).populate('sender', 'name profilePic status').sort({ createdAt: -1 }).limit(limit * 1).skip((page - 1) * limit);
+        let messages = await Message.find({ _id: { $in: group.messages } }).populate('sender', 'name profilePic status').populate('replyTo', 'message sender').populate('replyTo.sender', 'name profilePic status').sort({ createdAt: -1 }).limit(limit * 1).skip((page - 1) * limit);
+
+        for (let message of messages) {
+            if (message.replyTo) {
+                const resenderinfo = await User.findById(message.replyTo.sender._id).select('name profilePic status');
+                message.replyTo.sender = resenderinfo;
+            }
+        }
 
         let endmessages = {};
 
