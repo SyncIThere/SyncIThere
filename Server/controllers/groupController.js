@@ -1,6 +1,7 @@
 
 import Group from '../models/groupModel.js';
 import User from '../models/userModel.js';
+import Message from '../models/messageModel.js';
 
 const createGroup = async (req, res) => {
     try {
@@ -50,28 +51,28 @@ const getGroupInfo = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const group = await Group.findById(id);
+        const { page = 1, limit = 10 } = req.query;
+
+        let group = await Group.findById(id).populate('members', 'name profilePic status').populate('owner', 'name profilePic status').populate('lastMessage', 'text createdAt sender').populate({ path: 'messages', options: { sort: { createdAt: -1 }, limit: limit * 1, skip: (page - 1) * limit } });
 
         if (!group) {
             return res.status(404).json({ message: 'Group not found' });
         }
 
-        if (!group.members.includes(req.user._id)) {
+        if (!group.members.map(member => member._id.toString()).includes(req.user._id.toString())) {
             return res.status(403).json({ message: 'You are not allowed to view this group' });
         }
 
-        await group.populate('members', 'name profilePic status');
+        const totalMessages = await Message.countDocuments({ _id: { $in: group.messages } });
 
-        let lastMessage = group.messages[group.messages.length - 1];
+        group = group.toObject();
 
-        let endgroup = group.toObject();
+        group.totalMembers = group.members.length;
+        group.totalMessages = totalMessages;
+        group.totalPages = Math.ceil(totalMessages / limit);
+        group.currentPage = page;
 
-        endgroup.lastMessage = lastMessage?.text || 'No messages yet';
-        endgroup.lastMessageTime = lastMessage?.createdAt || 'No messages yet';
-
-        endgroup.lastMessageUser = lastMessage ? await User.findById(lastMessage.sender) : 'No messages yet';
-
-        res.status(200).json(endgroup);
+        res.status(200).json(group);
     }
     catch (error) {
         res.status(500).json({ message: error.message });
@@ -278,7 +279,7 @@ const removeUserFromGroup = async (req, res) => {
     }
 }
 
-// Next to clean up the code, we can create a function to check if the user is the owner of the group or not.
+// Next to clean up the code, done in flight
 const quitGroup = async (req, res) => {
     try {
         const { id } = req.params;
@@ -289,14 +290,18 @@ const quitGroup = async (req, res) => {
             return res.status(404).json({ message: 'Group not found' });
         }
 
-        if (group.owner.toString() === req.user._id.toString()) {
-            return res.status(403).json({ message: 'Owner cannot quit the group' });
-        }
-
         if (!group.members.includes(req.user._id)) {
             return res.status(400).json({ message: 'You are not in the group' });
         }
 
+        if (group.members.length() === 1) {
+            await Group.findByIdAndDelete(id);
+            return res.status(200).json({ message: 'Group deleted successfully' });
+        }
+
+        if (group.owner.toString() === req.user._id.toString()) {
+            group.owner = group.members[0];
+        }
 
         group.members = group.members.filter(member => member.toString() !== req.user._id.toString());
         await group.save();
@@ -309,7 +314,186 @@ const quitGroup = async (req, res) => {
     }
 }
 
-export { createGroup, getGroupInfo, changeName, changeIcon, changeOwner, deleteGroup, addUserToGroup, removeUserFromGroup, quitGroup };
+const addMessage = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const { message, replyTo } = req.body;
+
+        if (!message) {
+            return res.status(400).json({ message: 'Message is required' });
+        }
+
+        if (replyTo) {
+            const messageReply = await Message.findById(replyTo);
+
+            if (!messageReply) {
+                return res.status(404).json({ message: 'Message to reply to not found' });
+            }
+        }
+
+        const group = await Group.findById(id);
+
+        if (!group) {
+            return res.status(404).json({ message: 'Group not found' });
+        }
+
+        if (!group.members.includes(req.user._id.toString())) {
+            return res.status(400).json({ message: 'You are not in the group' });
+        }
+
+        const newmessage = new Message({
+            message,
+            sender: req.user._id,
+            replyTo,
+            location: {
+                type: 'group',
+                group: group._id,
+            }
+        })
+
+        await newmessage.save();
+
+        group.messages.push(newmessage._id);
+
+        group.lastMessage = newmessage._id;
+
+        await group.save();
+
+        res.status(201).json(newmessage)
+
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+        console.error(error);
+    }
+}
+
+const deletMessage = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const { idmessage } = req.body;
+
+        const message = await Message.findById(idmessage.toString())
+
+        if (!message) {
+            return res.status(404).json({ message: 'Message not found' })
+        }
+
+        const group = await Group.findById(id);
+
+        if (!group) {
+            return res.status(404).json({ message: 'Group not found' });
+        }
+
+        if (message.sender.toString() !== req.user._id.toString()) {
+            return res.status(400).json({ message: 'You are not the sender of this message' });
+        }
+
+        if (!group.messages.includes(idmessage.toString())) {
+            return res.status(400).json({ message: 'This message is not in this group' });
+        }
+
+        group.messages = group.messages.filter(mess => mess.toString() !== message._id.toString())
+
+        if (group.lastMessage.toString() === message._id.toString()) {
+            group.lastMessage = group.messages[group.messages.length - 1];
+        }
+
+        await group.save();
+
+        await Message.findByIdAndDelete(message._id.toString());
+
+        res.status(200).json({ message: 'Message deleted successfuly' })
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+        console.error(error);
+    }
+}
+
+const updateMessage = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const { idmessage, message } = req.body;
+
+        const mess = await Message.findById(idmessage.toString())
+
+        if (!mess) {
+            return res.status(404).json({ message: 'Message not found' })
+        }
+
+        const group = await Group.findById(id);
+
+        if (!group) {
+            return res.status(404).json({ message: 'Group not found' });
+        }
+
+        if (mess.sender.toString() !== req.user._id.toString()) {
+            return res.status(400).json({ message: 'You are not the sender of this message' });
+        }
+
+        if (!group.messages.includes(idmessage.toString())) {
+            return res.status(400).json({ message: 'This message is not in this group' });
+        }
+
+        if (!message || message === '') {
+            return res.status(400).json({ message: 'Message is required' });
+        }
+
+        mess.updated = true;
+        mess.message = message;
+        await mess.save();
+
+        res.status(200).json(mess);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+        console.error(error);
+    }
+}
+
+const getMessages = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const { page = 1, limit = 10 } = req.query;
+
+        const group = await Group.findById(id);
+
+        if (!group) {
+            return res.status(404).json({ message: 'Group not found' });
+        }
+
+        if (!group.members.includes(req.user._id.toString())) {
+            return res.status(400).json({ message: 'You are not in the group' });
+        }
+
+        let messages = await Message.find({ _id: { $in: group.messages } }).populate('sender', 'name profilePic status').sort({ createdAt: -1 }).limit(limit * 1).skip((page - 1) * limit);
+
+        let endmessages = {};
+
+        endmessages.messages = messages;
+        endmessages.totalMessages = group.messages.length;
+        endmessages.totalPages = Math.ceil(group.messages.length / limit);
+        endmessages.currentPage = page;
+
+        res.status(200).json(endmessages);
+
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+        console.error(error);
+    }
+}
+
+
+
+
+
+export { createGroup, getGroupInfo, changeName, changeIcon, changeOwner, deleteGroup, addUserToGroup, removeUserFromGroup, quitGroup, addMessage, deletMessage, updateMessage, getMessages };
 
 
 

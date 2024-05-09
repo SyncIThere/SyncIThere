@@ -1,6 +1,6 @@
 
 import express from 'express';
-import { createGroup, getGroupInfo, changeName, changeIcon, changeOwner, deleteGroup, addUserToGroup, removeUserFromGroup, quitGroup } from '../controllers/groupController.js';
+import { createGroup, getGroupInfo, changeName, changeIcon, changeOwner, deleteGroup, addUserToGroup, removeUserFromGroup, quitGroup, addMessage, deletMessage, updateMessage, getMessages } from '../controllers/groupController.js';
 import { protectRoute } from '../middlewares/protectRoute.js';
 
 const router = express.Router();
@@ -14,5 +14,9 @@ router.delete('/deleteGroup/:id', protectRoute, deleteGroup);
 router.post('/addUserToGroup/:id', protectRoute, addUserToGroup);
 router.post('/removeUserFromGroup/:id', protectRoute, removeUserFromGroup);
 router.post('/quitGroup/:id', protectRoute, quitGroup);
+router.post('/addMessage/:id', protectRoute, addMessage);
+router.delete('/deleteMessage/:id', protectRoute, deletMessage);
+router.patch('/updateMessage/:id', protectRoute, updateMessage);
+router.get('/getMessages/:id', protectRoute, getMessages);
 
 export default router;
