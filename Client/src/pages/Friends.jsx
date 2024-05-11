@@ -1,15 +1,18 @@
 import { IconButton } from "@mui/material";
-import { Inbox, UserPlus } from "lucide-react";
+import { Inbox } from "lucide-react";
 import AvatarPP from "../components/Avatar";
 import Drawer from "../components/Drawer";
 import Menu from "../components/Menu";
 import NavbarOnline from "../components/NavbarOnline";
+
+import { Link } from "react-router-dom";
 
 import { Avatar, AvatarGroup } from "@mui/material";
 import Badge from "@mui/material/Badge";
 import { styled } from "@mui/material/styles";
 
 import test from "../assets/images/test.jpg";
+import PopupAddFriend from "../components/PopupAddfriend";
 import PopupAddGoupe from "../components/PopupAddGoupe";
 
 const Friends = () => {
@@ -53,10 +56,8 @@ const Friends = () => {
             <div className="p-2 mt-5 flex justify-between items-center fixed top-0 w-full  md:w-[300px] z-50">
               <h2 className="text-2xl">Messages</h2>
 
-              <div>
-                <IconButton aria-label="Add Friends" color="text">
-                  <UserPlus />{" "}
-                </IconButton>
+              <div className="flex">
+                <PopupAddFriend />
 
                 <IconButton aria-label="Add Friends" color="text">
                   <Inbox />
@@ -66,9 +67,13 @@ const Friends = () => {
 
             <AvatarPP />
 
-            <div className="w-full border-b border-border mb-5"></div>
+            <div className="w-full border-b border-border "></div>
 
-            <div className=" p-3 border-b border-border w-full flex items-center justify-between md:mt-[90px]">
+            <Link
+              className=" p-3 border-b border-border w-full flex items-center justify-between md:mt-[90px] no-underline"
+              to="/conversation"
+            >
+              {" "}
               <div className="flex items-center justify-center">
                 <StyledBadge
                   overlap="circular"
@@ -88,9 +93,11 @@ const Friends = () => {
                 </div>
               </div>
               <p className="opacity-50 font-light">5min</p>
-            </div>
-
-            <div className=" p-3 border-b  border-border w-full flex items-center justify-between">
+            </Link>
+            <Link
+              className=" p-3 border-b border-border w-full flex items-center justify-between no-underline"
+              to="/conversation"
+            >
               <div className="flex items-center justify-center">
                 <AvatarGroup max={2}>
                   <StyledBadge
@@ -113,7 +120,7 @@ const Friends = () => {
                 </div>
               </div>
               <p className="opacity-50 font-light">5min</p>
-            </div>
+            </Link>
 
             <div className="absolute bottom-[95px] right-[25px] md:right-[250px]">
               <PopupAddGoupe />
