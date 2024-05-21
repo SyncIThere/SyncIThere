@@ -17,7 +17,7 @@ const Menu = () => {
             </li>
             <li>
               <a
-                href="/"
+                href="/friends"
                 className="flex flex-col justify-center items-center text-text decoration-transparent font-light"
               >
                 <Contact strokeWidth={1} color="#EDEEF0" />
@@ -35,7 +35,7 @@ const Menu = () => {
             </li>
             <li>
               <a
-                href="/"
+                href="/account"
                 className="flex flex-col justify-center items-center text-text decoration-transparent font-light"
               >
                 <CircleUser strokeWidth={1} color="#EDEEF0" />
