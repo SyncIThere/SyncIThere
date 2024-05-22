@@ -5,10 +5,13 @@ import Fab from "@mui/material/Fab";
 import { Plus } from "lucide-react";
 import PropTypes from "prop-types";
 import React from "react";
+import { useTranslation } from "react-i18next";
+import "../i18n";
 const emails = ["username@gmail.com", "user02@gmail.com"];
 
 function SimpleDialog(props) {
   const { onClose, selectedValue, open } = props;
+  const { t } = useTranslation();
 
   const handleClose = () => {
     onClose(selectedValue);
@@ -18,7 +21,7 @@ function SimpleDialog(props) {
     <Dialog onClose={handleClose} open={open}>
       <div className="bg-background w-[300px] flex items-center flex-col ">
         <DialogTitle className="bg-background">
-          Create a Conversation
+          {t("Create a Conversation")}
         </DialogTitle>
         <div className="h-[200px] flex flex-col items-center justify-between my-5">
           <div className="flex flex-col justify-center bg-background">
@@ -35,7 +38,7 @@ function SimpleDialog(props) {
             color="primary"
             className="text-text w-[150px]"
           >
-            Create
+            {t("Create")}
           </Button>
         </div>
       </div>

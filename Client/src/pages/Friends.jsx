@@ -1,5 +1,3 @@
-import { IconButton } from "@mui/material";
-import { Inbox } from "lucide-react";
 import AvatarPP from "../components/Avatar";
 import Drawer from "../components/Drawer";
 import Menu from "../components/Menu";
@@ -11,11 +9,16 @@ import { Avatar, AvatarGroup } from "@mui/material";
 import Badge from "@mui/material/Badge";
 import { styled } from "@mui/material/styles";
 
+import { useTranslation } from "react-i18next";
 import test from "../assets/images/test.jpg";
-import PopupAddFriend from "../components/PopupAddfriend";
 import PopupAddGoupe from "../components/PopupAddGoupe";
+import PopupAddFriend from "../components/PopupAddfriend";
+import PopupPending from "../components/PopupPending";
+import "../i18n";
 
 const Friends = () => {
+  const { t } = useTranslation();
+
   const StyledBadge = styled(Badge)(() => ({
     "& .MuiBadge-badge": {
       backgroundColor: "#44b700",
@@ -54,14 +57,12 @@ const Friends = () => {
 
           <main className="w-full">
             <div className="p-2 mt-5 flex justify-between items-center fixed top-0 w-full  md:w-[300px] z-50">
-              <h2 className="text-2xl">Messages</h2>
+              <h2 className="text-2xl"> {t("Messages")}</h2>
 
               <div className="flex">
                 <PopupAddFriend />
 
-                <IconButton aria-label="Add Friends" color="text">
-                  <Inbox />
-                </IconButton>
+                <PopupPending />
               </div>
             </div>
 
@@ -73,7 +74,6 @@ const Friends = () => {
               className="m-0 p-3 border-b border-border w-full flex items-center justify-between md:mt-[90px] no-underline"
               to="/conversation"
             >
-              {" "}
               <div className="flex items-center justify-center">
                 <StyledBadge
                   overlap="circular"
@@ -89,7 +89,7 @@ const Friends = () => {
 
                 <div className="flex flex-col ml-5">
                   <p className="opacity-50">Pseudo</p>
-                  <p className="opacity-50 font-light">toi: salut</p>
+                  <p className="opacity-50 font-light">{t("You")}: salut</p>
                 </div>
               </div>
               <p className="opacity-50 font-light">5min</p>
@@ -117,7 +117,7 @@ const Friends = () => {
 
                 <div className="flex flex-col ml-5">
                   <p className="opacity-50">Pseudo</p>
-                  <p className="opacity-50 font-light">toi: salut</p>
+                  <p className="opacity-50 font-light">{t("You")}: salut</p>
                 </div>
               </div>
               <p className="opacity-50 font-light">5min</p>
