@@ -70,7 +70,7 @@ const Friends = () => {
             <div className="w-full border-b border-border "></div>
 
             <Link
-              className=" p-3 border-b border-border w-full flex items-center justify-between md:mt-[90px] no-underline"
+              className="m-0 p-3 border-b border-border w-full flex items-center justify-between md:mt-[90px] no-underline"
               to="/conversation"
             >
               {" "}
@@ -94,8 +94,9 @@ const Friends = () => {
               </div>
               <p className="opacity-50 font-light">5min</p>
             </Link>
+
             <Link
-              className=" p-3 border-b border-border w-full flex items-center justify-between no-underline"
+              className="m-0 p-3 border-b border-border w-full flex items-center justify-between no-underline"
               to="/conversation"
             >
               <div className="flex items-center justify-center">

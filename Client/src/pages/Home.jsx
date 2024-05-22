@@ -1,6 +1,7 @@
 import Logo from "../assets/images/logo.svg";
 // import Button from "../components/Button";
 import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
@@ -22,13 +23,15 @@ const Home = () => {
                 <input type="password" placeholder="Password" />
               </div>
 
-              <Button
-                variant="contained"
-                color="primary"
-                className="text-text w-[150px]"
-              >
-                Connect
-              </Button>
+              <Link to={"/friends"}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className="text-text w-[150px]"
+                >
+                  Connect
+                </Button>
+              </Link>
 
               <div className="flex">
                 <p>Do not have an account yet ? </p>

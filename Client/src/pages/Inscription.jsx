@@ -1,4 +1,5 @@
 import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
 import Logo from "../assets/images/logo.svg";
 
 const Inscription = () => {
@@ -30,13 +31,15 @@ const Inscription = () => {
                 <input type="password" placeholder="Confirm Password" />
               </div>
 
-              <Button
-                variant="contained"
-                color="primary"
-                className="text-text w-[150px]"
-              >
-                Inscription
-              </Button>
+              <Link to={"/friends"}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className="text-text w-[150px]"
+                >
+                  Inscription
+                </Button>
+              </Link>
 
               <div className="flex">
                 <p>Already have an account ?</p>
