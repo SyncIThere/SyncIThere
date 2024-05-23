@@ -8,9 +8,14 @@ import generateTokenAndSetCookie from '../utils/helpers/generateTokenAndSetCooki
 const signupUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
+
+        if (!name || !email || !password) {
+            return res.status(422).json({ message: 'Please fill all fields' });
+        }
+
         const user = await User.findOne({ $or: [{ name }, { email }] });
         if (user) {
-            return res.status(400).json({ message: 'User already exists' });
+            return res.status(409).json({ message: 'Please choose another username or email' });
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -35,7 +40,7 @@ const signupUser = async (req, res) => {
                 email: newUser.email,
             });
         } else {
-            res.status(400).json({ message: 'Invalid user data' });
+            res.status(404).json({ message: 'Invalid user data' });
         }
     }
     catch (error) {
@@ -54,11 +59,16 @@ const loginUser = async (req, res) => {
         }
 
         const { name, password } = req.body;
+
+        if (!name || !password) {
+            return res.status(422).json({ message: 'Please fill all fields' });
+        }
+
         const user = await User.findOne({ name });
         const isPasswordCorrect = await bcrypt.compare(password, user?.password || "");
 
         if (!user || !isPasswordCorrect) {
-            return res.status(400).json({ message: 'Invalid username or password' });
+            return res.status(404).json({ message: 'Invalid username or password' });
         }
 
         user.status = 'online';
@@ -80,7 +90,7 @@ const loginUser = async (req, res) => {
 }
 
 // logout User
-const logoutUser = async(req, res) => {
+const logoutUser = async (req, res) => {
     try {
         const token = req.cookies.jwt;
 
@@ -318,8 +328,6 @@ const getUserInfo = async (req, res) => {
     }
 
 }
-
-
 
 // get friends
 const getFriends = async (req, res) => {

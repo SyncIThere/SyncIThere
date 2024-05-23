@@ -9,6 +9,8 @@ import { FormControl, FormLabel, Input, InputGroup, InputRightElement, Button, L
 import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import useShowToast from "../hooks/useShowToast";
+import { useTranslation } from "react-i18next";
+import "../i18n";
 
 
 const SignupCard = () => {
@@ -17,6 +19,8 @@ const SignupCard = () => {
     const setUserData = useSetRecoilState(userAtom);
 
     const showToast = useShowToast();
+
+    const { t } = useTranslation();
 
     const togglevalidity = (element, isValid) => {
         if (element) {
@@ -140,13 +144,13 @@ const SignupCard = () => {
                 <div className=" bg-interactiveOpacity shadow-lg mx-3 py-5 h-[95vh] w-full md:w-[400px] md:h-[70vh] border border-border rounded-lg flex flex-col justify-center">
                     <div className="flex flex-col justify-center items-center">
                         <img className="w-[100px] mb-[20px]" src={Logo} alt="logo" />
-                        <h1 className="text-3xl mb-[20px]">Inscription</h1>
+                        <h1 className="text-3xl mb-[20px]">{t("Inscription")}</h1>
 
                         <div className="h-[400px] flex flex-col items-center justify-between">
 
                             <FormControl className="flex flex-col justify-center" id="name" isRequired isInvalid={!pseudoIsValid(inputs.name)} >
-                                <FormLabel htmlFor="name">Pseudo</FormLabel>
-                                <Input type="text" placeholder="Pseudo"
+                                <FormLabel htmlFor="name">{t("Pseudo")}</FormLabel>
+                                <Input type="text" placeholder={t("Pseudo")}
                                     onChange={(e) => setInput({ ...inputs, name: e.target.value })}
                                     value={inputs.name}
                                 />
@@ -158,8 +162,8 @@ const SignupCard = () => {
                             </FormControl>
 
                             <FormControl className="flex flex-col justify-center" id="email" isRequired isInvalid={!emailIsValid(inputs.email)}>
-                                <FormLabel htmlFor="">Email</FormLabel>
-                                <Input type="mail" placeholder="Email"
+                                <FormLabel htmlFor="">{t("Email")}</FormLabel>
+                                <Input type="mail" placeholder={t("Email")}
                                     onChange={(e) => setInput({ ...inputs, email: e.target.value })}
                                     value={inputs.email}
                                 />
@@ -171,9 +175,9 @@ const SignupCard = () => {
                             </FormControl>
 
                             <FormControl className="flex flex-col justify-center" id="password" isRequired isInvalid={!passwordIsValid(inputs.password)}>
-                                <FormLabel>Password</FormLabel>
+                                <FormLabel>{t("Password")}</FormLabel>
                                 <InputGroup>
-                                    <Input type={showPassword ? 'text' : 'password'} placeholder="Password"
+                                    <Input type={showPassword ? 'text' : 'password'} placeholder={t("Password")}
                                         onChange={(e) => setInput({ ...inputs, password: e.target.value })}
                                         value={inputs.password}
                                     />
@@ -195,8 +199,8 @@ const SignupCard = () => {
                             </FormControl>
 
                             <FormControl className="flex flex-col justify-center" id="confirmPassword" isRequired isInvalid={!confirmPasswordIsValid(inputs.password, inputs.confirmPassword)}>
-                                <FormLabel htmlFor="">Confirm Password</FormLabel>
-                                <Input type="password" placeholder="Confirm Password"
+                                <FormLabel htmlFor="">{t("Confirm Password")}</FormLabel>
+                                <Input type="password" placeholder={t("Confirm Password")}
                                     onChange={(e) => setInput({ ...inputs, confirmPassword: e.target.value })}
                                     value={inputs.confirmPassword}
                                 />
@@ -214,12 +218,12 @@ const SignupCard = () => {
                                 onClick={handleSignup}
                                 id="sendButton"
                             >
-                                Register
+                                {t("Inscription")}
                             </MuiButton>
 
                             <div className="flex">
-                                <p>Already have an account ?</p>
-                                <Link onClick={() => setAuthScreen("login")} cursor="pointer" color="blue.400">Login</Link>
+                                <p>{t("Already have an account ?")}</p>
+                                <Link onClick={() => setAuthScreen("login")} cursor="pointer" color="blue.400">{t("Log in")}</Link>
                             </div>
                         </div>
                     </div>

@@ -1,10 +1,14 @@
 import Avatar from "@mui/material/Avatar";
 import { Cog, Pencil } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import test from "../assets/images/test.jpg";
 import Drawer from "../components/Drawer";
+import LanguageSelector from "../components/LanguageSelector";
 import Menu from "../components/Menu";
+import "../i18n";
 
 const Account = () => {
+  const { t } = useTranslation();
   return (
     <>
       <div className="h-[100vh]">
@@ -12,7 +16,7 @@ const Account = () => {
         <div className="md:flex md:justify-between">
           <Drawer />
           <main className="w-full">
-            <h2 className="text-2xl m-5">Account</h2>
+            <h2 className="text-2xl m-5">{t("Account")}</h2>
             <div className="flex flex-col items-center">
               <Avatar
                 alt="Remy Sharp"
@@ -22,10 +26,11 @@ const Account = () => {
               <div className="flex items-center justify-end w-full md:w-[350px]">
                 <Pencil color="#EDEEF0" className="m-2" />
                 <Cog color="#EDEEF0" className="m-2" />
+                <LanguageSelector />
               </div>
 
               <div>
-                <h3 className="text-xl mt-5">Description:</h3>
+                <h3 className="text-xl mt-5">{t("Description")}:</h3>
                 <p className=" bg-interactive p-2 w-[350px] rounded-lg border border-border">
                   {" "}
                   Lorem ipsum, dolor sit amet consectetur adipisicing elit.

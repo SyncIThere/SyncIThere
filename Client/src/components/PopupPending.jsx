@@ -1,12 +1,12 @@
-import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
-import { UserPlus } from "lucide-react";
+import { Inbox } from "lucide-react";
 import PropTypes from "prop-types";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import "../i18n";
+import BasicTabs from "./BasicTabs";
 const emails = ["username@gmail.com", "user02@gmail.com"];
 
 function SimpleDialog(props) {
@@ -19,25 +19,13 @@ function SimpleDialog(props) {
 
   return (
     <Dialog onClose={handleClose} open={open}>
-      <div className="bg-background w-[300px] flex items-center flex-col ">
-        <DialogTitle className="bg-background">{t("Add a friend")}</DialogTitle>
+      <div className="bg-background  flex items-center flex-col ">
+        <DialogTitle className="bg-background">
+          {t("Pending request")}
+        </DialogTitle>
         <div className="h-[200px] flex flex-col items-center justify-between my-5">
-          <div className="flex flex-col justify-center bg-background">
-            <label htmlFor="">{t("Pseudo")}</label>
-            <input type="mail" placeholder={t("Pseudo")} />
-          </div>
-          <div className="flex flex-col justify-center bg-background">
-            <label htmlFor="">Email</label>
-            <input type="mail" placeholder="Email" />
-          </div>
-
-          <Button
-            variant="contained"
-            color="primary"
-            className="text-text w-[150px]"
-          >
-            {t("Add")}
-          </Button>
+          {/* <Code></Code> */}
+          <BasicTabs />
         </div>
       </div>
     </Dialog>
@@ -50,7 +38,7 @@ SimpleDialog.propTypes = {
   selectedValue: PropTypes.string.isRequired,
 };
 
-export default function PopupAddFriend() {
+export default function PopupPending() {
   const [open, setOpen] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState(emails[1]);
 
@@ -70,7 +58,7 @@ export default function PopupAddFriend() {
         color="text"
         onClick={handleClickOpen}
       >
-        <UserPlus />
+        <Inbox />
       </IconButton>
       <SimpleDialog
         selectedValue={selectedValue}

@@ -3,12 +3,15 @@ import Badge from "@mui/material/Badge";
 import Fab from "@mui/material/Fab";
 import { styled } from "@mui/material/styles";
 import { ArrowLeftFromLine, ArrowUpFromDot, Phone } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import test from "../assets/images/test.jpg";
 import Drawer from "../components/Drawer";
 import NavbarOnline from "../components/NavbarOnline";
+import "../i18n";
 
 const Conversation = () => {
+  const { t } = useTranslation();
   const StyledBadge = styled(Badge)(() => ({
     "& .MuiBadge-badge": {
       backgroundColor: "#44b700",
@@ -65,7 +68,7 @@ const Conversation = () => {
             </div>
             <div className="flex justify-center">
               <div className="flex justify-between items-center w-[300px] absolute bottom-10">
-                <input type="text" placeholder="Your message..." />
+                <input type="text" placeholder={t("Your message")} />
                 <Fab size="small" color="primary" aria-label="add">
                   <ArrowUpFromDot size={16} color="#EDEEF0" />
                 </Fab>

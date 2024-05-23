@@ -3,6 +3,7 @@ import { Route, BrowserRouter as Router, Routes, Navigate } from "react-router-d
 import theme from "../theme";
 import Account from "./pages/Account";
 import Conversation from "./pages/Conversation";
+import Discover from "./pages/Discover";
 import Friends from "./pages/Friends";
 import Home from "./pages/Home";
 import Auth from "./pages/Auth";
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/friends" element={user ? <Friends /> : <Navigate to="/auth" />} />
         <Route path="/conversation" element={<Conversation />} />
         <Route path="/account" element={<Account />} />
+        <Route path="/discover" element={<Discover />} />
       </Routes>
       {user && <LogoutButton />}
     </ThemeProvider>

@@ -5,6 +5,7 @@ import connectDB from './db/connectDB.js';
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoutes.js';
 import groupRoutes from './routes/groupRoutes.js';
+import { protectRoute } from './middlewares/protectRoute.js';
 
 dotenv.config();
 
@@ -20,6 +21,9 @@ app.use(cookieParser());
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/groups', groupRoutes)
+app.use('/api/check-auth', protectRoute, (req, res) => {
+    res.status(200).json({ message: 'User is authenticated' });
+});
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
