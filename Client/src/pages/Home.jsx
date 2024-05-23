@@ -1,9 +1,15 @@
+import { useRecoilValue } from "recoil";
 import Logo from "../assets/images/logo.svg";
 // import Button from "../components/Button";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
+import authScreenAtom from "../atoms/authAtom";
 
 const Home = () => {
+  const authSreenState = useRecoilValue(authScreenAtom);
+  // useSetRecoilState(authScreenAtom, "login");
+  console.log(authSreenState);
+
   return (
     <>
       <main className="flex flex-col items-center justify-center h-[100vh]">

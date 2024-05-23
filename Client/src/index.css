@@ -3,18 +3,21 @@
 @tailwind utilities;
 
 @layer utilities {
-    @variants responsive {
-        /* Hide scrollbar for Chrome, Safari and Opera */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
+  @variants responsive {
 
-        /* Hide scrollbar for IE, Edge and Firefox */
-        .no-scrollbar {
-            -ms-overflow-style: none; /* IE and Edge */
-            scrollbar-width: none; /* Firefox */
-        }
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
     }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      /* IE and Edge */
+      scrollbar-width: none;
+      /* Firefox */
+    }
+  }
 }
 
 @font-face {
@@ -32,12 +35,22 @@
 }
 
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Barlow Condensed', sans-serif;
   color: #EDEEF0;
 }
 
-p, button, label, input, select, textarea{
+p,
+button,
+label,
+input,
+select,
+textarea {
   font-family: 'Roboto', sans-serif;
   color: #EDEEF0;
 }
@@ -54,6 +67,35 @@ a {
   text-decoration: underline;
   margin-left: 5px;
 }
+
 input {
-  @apply  bg-interactive p-2 w-[250px] rounded-lg focus:border focus:border-border  focus:outline-none mt-1;
+  @apply bg-interactive p-2 w-[250px] rounded-lg focus:border focus:border-border focus:outline-none mt-1;
+}
+
+.chakra-form__required-indicator {
+  color: red;
+  margin-left: 5px;
+}
+
+.chakra-input {
+  border-width: 0px;
+}
+
+.chakra-input.invalid {
+  border-color: red;
+  border-width: 2px;
+}
+
+.chakra-input.valid {
+  border-color: green;
+  border-width: 2px;
+}
+
+.MuiButtonBase-root:disabled {
+  background-color: #696E77;
+}
+
+.MuiButtonBase-root:disabled:hover {
+  background-color: #696E77;
+  cursor: not-allowed;
 }
