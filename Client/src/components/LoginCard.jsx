@@ -7,6 +7,8 @@ import { FormControl, FormLabel, Input, InputGroup, InputRightElement, Button, L
 import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import useShowToast from "../hooks/useShowToast";
+import "../i18n";
+import { useTranslation } from "react-i18next";
 
 const LoginCard = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -14,6 +16,8 @@ const LoginCard = () => {
     const setUserData = useSetRecoilState(userAtom);
 
     const showToast = useShowToast();
+
+    const { t } = useTranslation();
 
     let [inputs, setInput] = useState({
         name: "",
@@ -39,7 +43,6 @@ const LoginCard = () => {
                 localStorage.setItem("user", JSON.stringify(data));
                 setUserData(data);
                 showToast("Success", "User logged in successfully", "success");
-                await new Promise(r => setTimeout(r, 3000));
                 document.location.href = "/friends";
             } else {
                 showToast("Error", data.message, "error");
@@ -56,21 +59,21 @@ const LoginCard = () => {
                 <div className=" bg-interactiveOpacity shadow-lg mx-3 py-5 h-[90vh] w-full md:w-[400px] md:h-[60vh] border border-border rounded-lg flex flex-col justify-center">
                     <div className="flex flex-col justify-center items-center">
                         <img className="w-[100px] mb-[25px]" src={Logo} alt="logo" />
-                        <h1 className="text-3xl mb-[25px]">Connection</h1>
+                        <h1 className="text-3xl mb-[25px]">{t("Connection")}</h1>
 
                         <div className="h-[280px] flex flex-col items-center justify-between">
                             <FormControl className="flex flex-col justify-center" id="name" isRequired>
-                                <FormLabel htmlFor="name">Pseudo</FormLabel>
-                                <Input type="text" placeholder="Pseudo"
+                                <FormLabel htmlFor="name">{t("Pseudo")}</FormLabel>
+                                <Input type="text" placeholder={t("Pseudo")}
                                     onChange={(e) => setInput({ ...inputs, name: e.target.value })}
                                     value={inputs.name}
                                 />
                             </FormControl>
 
                             <FormControl className="flex flex-col justify-center" id="password" isRequired>
-                                <FormLabel>Password</FormLabel>
+                                <FormLabel>{t("Password")}</FormLabel>
                                 <InputGroup>
-                                    <Input type={showPassword ? 'text' : 'password'} placeholder="Password"
+                                    <Input type={showPassword ? 'text' : 'password'} placeholder={t("Password")}
                                         onChange={(e) => setInput({ ...inputs, password: e.target.value })}
                                         value={inputs.password}
                                     />
@@ -93,12 +96,12 @@ const LoginCard = () => {
                                 onClick={handleLogin}
                                 id="sendButton"
                             >
-                                Connect
+                                {t("Connect")}
                             </MuiButton>
 
                             <div className="flex">
-                                <p>Do not have an account yet ? </p>
-                                <Link onClick={() => setAuthScreen("signup")} cursor="pointer" color="blue.400">Register now</Link>
+                                <p>{t("Do not have an account yet ? ")}</p>
+                                <Link onClick={() => setAuthScreen("signup")} cursor="pointer" color="blue.400">{t("Register now")}</Link>
                             </div>
                         </div>
                     </div>
