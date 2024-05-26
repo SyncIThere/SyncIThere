@@ -1,6 +1,6 @@
 
 import express from 'express';
-import { signupUser, loginUser, logoutUser, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, unFriend, getUserInfo, getFriends, getCommonFriends, getFriendRequests, getSentFriendRequests } from '../controllers/userController.js';
+import { signupUser, loginUser, logoutUser, sendFriendRequest, cancelFriendRequest, acceptFriendRequest, rejectFriendRequest, unFriend, getUserInfo, getFriends, getCommonFriends, getFriendRequests, getSentFriendRequests, updateUser } from '../controllers/userController.js';
 import { protectRoute, setUserInfo } from '../middlewares/protectRoute.js';
 
 const router = express.Router();
@@ -10,6 +10,7 @@ router.post('/login', loginUser);
 router.post('/logout', protectRoute, logoutUser);
 
 router.post('/sendFriendRequest/:name', protectRoute, sendFriendRequest);
+router.post('/cancelFriendRequest/:name', protectRoute, cancelFriendRequest);
 router.post('/acceptFriendRequest/:name', protectRoute, acceptFriendRequest);
 router.post('/rejectFriendRequest/:name', protectRoute, rejectFriendRequest);
 router.post('/unFriend/:name', protectRoute, unFriend);
@@ -20,6 +21,8 @@ router.get('/getFriends', protectRoute, getFriends);
 router.get('/getCommonFriends/:name', protectRoute, getCommonFriends);
 router.get('/getFriendRequests', protectRoute, getFriendRequests);
 router.get('/getSentFriendRequests', protectRoute, getSentFriendRequests);
+
+router.put('/updateUser', protectRoute, updateUser);
 
 router.get('*', (req, res) => res.status(404).send('404, Page Not Found'));
 router.post('*', (req, res) => res.status(404).send('404, Page Not Found'));

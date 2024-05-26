@@ -3,6 +3,7 @@ import User from '../models/userModel.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import generateTokenAndSetCookie from '../utils/helpers/generateTokenAndSetCookie.js';
+import { v2 as cloudinary } from 'cloudinary';
 
 // signup User
 const signupUser = async (req, res) => {
@@ -38,6 +39,8 @@ const signupUser = async (req, res) => {
                 _id: newUser._id,
                 name: newUser.name,
                 email: newUser.email,
+                bio: newUser.bio,
+                profilePic: newUser.profilePic,
             });
         } else {
             res.status(404).json({ message: 'Invalid user data' });
@@ -80,6 +83,8 @@ const loginUser = async (req, res) => {
             _id: user._id,
             name: user.name,
             email: user.email,
+            bio: user.bio,
+            profilePic: user.profilePic,
         });
 
     } catch (error) {
@@ -118,7 +123,6 @@ const sendFriendRequest = async (req, res) => {
     try {
 
         const { name } = req.params;
-
         const userToRequest = await User.findOne({ name });
         const currentUser = await User.findById(req.user._id.toString());
 
@@ -145,6 +149,41 @@ const sendFriendRequest = async (req, res) => {
         await userToRequest.save();
 
         res.status(200).json({ message: 'Request sent successfully' });
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+        console.error(error);
+    }
+}
+
+// cancel friend request
+const cancelFriendRequest = async (req, res) => {
+    try {
+        const { name } = req.params;
+
+        const userToCancel = await User.findOne({ name });
+        const currentUser = await User.findById(req.user._id.toString());
+
+        if (name === currentUser.name) {
+            return res.status(400).json({ message: 'You cannot cancel request to yourself' });
+        }
+
+        if (!userToCancel || !currentUser) {
+            return res.status(400).json({ message: 'User not found' });
+        }
+
+        const isRequestSent = currentUser.sentRequests.includes(userToCancel._id.toString());
+        if (!isRequestSent) {
+            return res.status(400).json({ message: 'No request sent' });
+        }
+
+        currentUser.sentRequests = currentUser.sentRequests.filter(request => request.toString() !== userToCancel._id.toString());
+        userToCancel.friendRequests = userToCancel.friendRequests.filter(request => request.toString() !== currentUser._id.toString());
+
+        await currentUser.save();
+        await userToCancel.save();
+
+        res.status(200).json({ message: 'Request cancelled successfully' });
 
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -205,10 +244,6 @@ const rejectFriendRequest = async (req, res) => {
 
         const userToReject = await User.findOne({ name });
         const currentUser = await User.findById(req.user._id.toString());
-
-        if (name === currentUser.name) {
-            return res.status(400).json({ message: 'You cannot reject request from yourself' });
-        }
 
         if (!userToReject || !currentUser) {
             return res.status(400).json({ message: 'User not found' });
@@ -399,6 +434,10 @@ const getFriendRequests = async (req, res) => {
 
         currentUser.friendRequests.forEach(request => {
             request.password = undefined;
+            request.friends = undefined;
+            request.friendRequests = undefined;
+            request.sentRequests = undefined;
+            request.email = undefined;
         });
 
 
@@ -420,6 +459,14 @@ const getSentFriendRequests = async (req, res) => {
             return res.status(400).json({ message: 'User not found' });
         }
 
+        currentUser.sentRequests.forEach(request => {
+            request.password = undefined;
+            request.friends = undefined;
+            request.friendRequests = undefined;
+            request.sentRequests = undefined;
+            request.email = undefined;
+        });
+
         res.status(200).json(currentUser.sentRequests);
 
     } catch (error) {
@@ -428,4 +475,100 @@ const getSentFriendRequests = async (req, res) => {
     }
 }
 
-export { signupUser, loginUser, logoutUser, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, unFriend, getUserInfo, getFriends, getCommonFriends, getFriendRequests, getSentFriendRequests };
+// update user
+const updateUser = async (req, res) => {
+    try {
+
+        let user = await User.findById(req.user._id.toString());
+
+        if (!user) {
+            return res.status(400).json({ message: 'User not found' });
+        }
+
+        const { name, email, oldpassword, newpassword, profilePic, bio } = req.body;
+
+        if (name) {
+
+            const userWithSameName = await User.findOne({
+                name,
+                _id: { $ne: user._id }
+            });
+
+            if (userWithSameName) {
+                return res.status(409).json({ message: 'Please choose another username' });
+            }
+
+            user.name = name;
+        }
+
+        if (email) {
+
+            const userWithSameEmail = await User.findOne({
+                email,
+                _id: { $ne: user._id }
+            });
+
+            if (userWithSameEmail) {
+                return res.status(409).json({ message: 'Please choose another email' });
+            }
+
+            user.email = email;
+        }
+
+        if (newpassword) {
+
+            if (!oldpassword) {
+                return res.status(400).json({ message: 'Please provide old password' });
+            }
+
+            const isPasswordCorrect = await bcrypt.compare(oldpassword, user.password);
+
+            if (!isPasswordCorrect) {
+                return res.status(400).json({ message: 'Old password is incorrect' });
+            }
+
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(newpassword, salt);
+
+            user.password = hashedPassword;
+
+        }
+
+        if (profilePic) {
+            if (user.profilePic) {
+                await cloudinary.uploader.destroy(user.profilePic.split('/').pop().split('.')[0]);
+            }
+
+            const uploadedResponse = await cloudinary.uploader.upload(profilePic);
+
+            user.profilePic = uploadedResponse.secure_url;
+        }
+
+        if (bio) {
+
+            if (bio.length > 100) {
+                return res.status(400).json({ message: 'Bio should be less than 100 characters' });
+            }
+
+            user.bio = bio;
+        }
+
+        await user.save();
+
+        let endUser = user.toObject();
+        endUser.password = undefined;
+        endUser.friendRequests = undefined;
+        endUser.sentRequests = undefined;
+        endUser.friends = undefined;
+        endUser.isAdmin = undefined;
+
+        res.status(200).json({ user: endUser });
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+        console.error(error);
+    }
+
+}
+
+export { signupUser, loginUser, logoutUser, sendFriendRequest, cancelFriendRequest, acceptFriendRequest, rejectFriendRequest, unFriend, getUserInfo, getFriends, getCommonFriends, getFriendRequests, getSentFriendRequests, updateUser };

@@ -5,7 +5,7 @@ import connectDB from './db/connectDB.js';
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoutes.js';
 import groupRoutes from './routes/groupRoutes.js';
-import { protectRoute } from './middlewares/protectRoute.js';
+import { v2 as cloudinary } from 'cloudinary';
 
 dotenv.config();
 
@@ -14,6 +14,12 @@ const app = express();
 
 const PORT = process.env.PORT || 5000;
 
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 app.use(express.json()); // to parse json data in the request body
 app.use(express.urlencoded({ extended: true })); // to parse form data
 app.use(cookieParser());
@@ -21,9 +27,6 @@ app.use(cookieParser());
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/groups', groupRoutes)
-app.use('/api/check-auth', protectRoute, (req, res) => {
-    res.status(200).json({ message: 'User is authenticated' });
-});
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
