@@ -8,7 +8,7 @@ const Menu = () => {
   return (
     <>
       <header>
-        <nav className="bg-border fixed bottom-0 w-full h-[70px] flex justify-center md:hidden">
+        <nav className="bg-border fixed bottom-0 w-full h-[70px] flex justify-center md:hidden z-50">
           <ul className="flex justify-around items-center w-full">
             <li>
               <Link

@@ -14,10 +14,16 @@ import test from "../assets/images/test.jpg";
 import PopupAddGoupe from "../components/PopupAddGoupe";
 import PopupAddFriend from "../components/PopupAddfriend";
 import PopupPending from "../components/PopupPending";
+import PendingRequest from "../components/PendingRequest";
 import "../i18n";
+import { useState } from "react";
+import { useRecoilValue } from "recoil";
+import userAtom from "../atoms/userAtom";
 
 const Friends = () => {
   const { t } = useTranslation();
+
+  const [user, setUser] = useState(useRecoilValue(userAtom));
 
   const StyledBadge = styled(Badge)(() => ({
     "& .MuiBadge-badge": {
@@ -53,20 +59,22 @@ const Friends = () => {
         <Menu />
 
         <div className="md:flex md:justify-between">
-          <Drawer />
+          <Drawer user={user} />
 
           <main className="w-full">
             <div className="p-2 mt-5 flex justify-between items-center fixed top-0 w-full  md:w-[300px] z-50">
               <h2 className="text-2xl"> {t("Messages")}</h2>
 
-              <div className="flex">
+              <div className="flex items-center">
                 <PopupAddFriend />
 
                 <PopupPending />
               </div>
+              <div>
+              </div>
             </div>
 
-            <AvatarPP />
+            {/* <AvatarPP /> */}
 
             <div className="w-full border-b border-border "></div>
 
