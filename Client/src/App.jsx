@@ -19,11 +19,12 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={!user ? <Home /> : <Navigate to="/friends" />} />
         <Route path="/auth" element={!user ? <Auth /> : <Navigate to="/friends" />} />
+
         <Route path="/friends" element={user ? <Friends /> : <Navigate to="/auth" />} />
-        <Route path="/conversation" element={<Conversation />} />
-        <Route path="/account" element={<Account />} />
+        <Route path="/conversation" element={user ? <Conversation /> : <Navigate to="/auth" />} />
+        <Route path="/account" element={user ? <Account /> : <Navigate to="/auth" />} />
         <Route path="/discover" element={<Discover />} />
       </Routes>
       {user && <LogoutButton />}

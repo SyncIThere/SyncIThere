@@ -6,12 +6,22 @@ import PropTypes from "prop-types";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import "../i18n";
-import BasicTabs from "./BasicTabs";
 const emails = ["username@gmail.com", "user02@gmail.com"];
+import { useRecoilValue } from "recoil";
+import userAtom from "../atoms/userAtom";
+import { useState, useEffect } from "react";
+import useShowToast from '../hooks/useShowToast';
+import { use } from "i18next";
+import PendingRequest from "./PendingRequest";
+import SentRequest from "./SentRequest";
 
 function SimpleDialog(props) {
   const { onClose, selectedValue, open } = props;
   const { t } = useTranslation();
+  const [user, setUser] = useState(useRecoilValue(userAtom));
+  const [pendingReq, setPendingReq] = useState([]);
+
+  const showToast = useShowToast();
 
   const handleClose = () => {
     onClose(selectedValue);
@@ -19,15 +29,29 @@ function SimpleDialog(props) {
 
   return (
     <Dialog onClose={handleClose} open={open}>
-      <div className="bg-background  flex items-center flex-col ">
+      <div className="bg-background  flex items-center flex-col w-full p-5">
         <DialogTitle className="bg-background">
           {t("Pending request")}
         </DialogTitle>
-        <div className="h-[200px] flex flex-col items-center justify-between my-5">
-          {/* <Code></Code> */}
-          <BasicTabs />
+        <div className="flex flex-col items-center justify-between my-5"
+          id="pendingReq" >
+          <PendingRequest />
+
         </div>
       </div>
+
+      <div className="bg-background  flex items-center flex-col w-full p-5">
+        <DialogTitle className="bg-background">
+          {t("Sent request")}
+        </DialogTitle>
+        <div className="flex flex-col items-center justify-between my-5"
+          id="sentReq" >
+          <SentRequest />
+        </div>
+
+      </div>
+
+
     </Dialog>
   );
 }
@@ -44,6 +68,7 @@ export default function PopupPending() {
 
   const handleClickOpen = () => {
     setOpen(true);
+
   };
 
   const handleClose = (value) => {

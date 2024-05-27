@@ -4,6 +4,7 @@ import useShowToast from "../hooks/useShowToast";
 import { IoIosLogOut } from "react-icons/io";
 import { useSetRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
+import { Button } from "@chakra-ui/react";
 
 const LogoutButton = () => {
 
@@ -36,13 +37,17 @@ const LogoutButton = () => {
     }
 
     return (
-        <button
+        <Button
             onClick={handleLogout}
             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            size={"sm"}
+            top={"30px"}
+            right={"30px"}
+            position="fixed"
         >
             <IoIosLogOut
-                size={40} />
-        </button>
+                size={25} />
+        </Button>
     );
 }
 

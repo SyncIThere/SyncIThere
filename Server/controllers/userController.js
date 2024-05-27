@@ -368,7 +368,7 @@ const getUserInfo = async (req, res) => {
 const getFriends = async (req, res) => {
     try {
 
-        const currentUser = await User.findById(req.user._id.toString()).populate('friends');
+        let currentUser = await User.findById(req.user._id.toString()).populate('friends');
 
         if (!currentUser) {
             return res.status(400).json({ message: 'User not found' });
@@ -382,7 +382,12 @@ const getFriends = async (req, res) => {
             friend.password = undefined;
         });
 
-        res.status(200).json(currentUser.friends);
+        let onlineFriends = currentUser.friends.filter(friend => friend.status !== 'offline');
+        let offlineFriends = currentUser.friends.filter(friend => friend.status === 'offline');
+        onlineFriends = onlineFriends.sort((a, b) => a.name.localeCompare(b.name));
+        offlineFriends = offlineFriends.sort((a, b) => a.name.localeCompare(b.name));
+
+        res.status(200).json({ onlineFriends, offlineFriends });
 
 
     } catch (error) {

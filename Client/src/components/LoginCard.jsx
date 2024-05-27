@@ -43,13 +43,12 @@ const LoginCard = () => {
                 localStorage.setItem("user", JSON.stringify(data));
                 setUserData(data);
                 showToast("Success", "User logged in successfully", "success");
-                document.location.href = "/friends";
             } else {
                 showToast("Error", data.message, "error");
             }
         }
         catch (err) {
-            console.log(err);
+            showToast("Error", err.message, "error");
         };
     }
 

@@ -124,11 +124,10 @@ const SignupCard = () => {
             });
             const data = await res.json();
             if (res.status === 201) {
-                localStorage.setItem("user", JSON.stringify(data));
                 console.log(data);
+                localStorage.setItem("user", JSON.stringify(data));
                 setUserData(data);
                 showToast("Success", "User " + data.name + " registered", "success");
-                document.location.href = "/friends";
             } else {
                 showToast("Error", data.message, "error");
                 return;
