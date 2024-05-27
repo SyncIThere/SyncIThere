@@ -1,16 +1,27 @@
 import { Avatar } from "@mui/material";
 import Badge from "@mui/material/Badge";
+import Popover from "@mui/material/Popover";
 import { styled } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-import test from "../assets/images/test.jpg";
 import "../i18n";
 import { useState, useEffect } from "react";
 import useShowToast from '../hooks/useShowToast';
+import PopupInfoProfil from "./PopupInfoProfil";
+import UserSmallDetail from "./UserSmallDetail";
+import UserInfo from "./UserInfo";
+import { useRecoilValue } from "recoil";
+import userAtom from "../atoms/userAtom";
+
 
 const NavbarOnline = () => {
   const showToast = useShowToast();
   const [isLoading, setIsLoading] = useState(true);
+
+  const [userName, setUserName] = useState('');
+  const [userInfoVisible, setUserInfoVisible] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [user, setUser] = useState(useRecoilValue(userAtom));
+
   const { t } = useTranslation();
   const StyledBadge = styled(Badge)(({ isonline }) => ({
     "& .MuiBadge-badge": {
@@ -55,7 +66,6 @@ const NavbarOnline = () => {
       if (res.status === 200) {
         setFriends(data);
         setIsLoading(false);
-        // setFriendsDisplay(data);
       } else {
         showToast(data.message, "error");
       }
@@ -67,6 +77,17 @@ const NavbarOnline = () => {
   useEffect(() => {
     getFriends();
   }, []);
+
+  const handleUserClick = (e, user) => {
+    setUserName(user);
+    setUserInfoVisible(true);
+    setAnchorEl(e.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setUserInfoVisible(false);
+    setAnchorEl(null);
+  };
 
 
   if (isLoading) {
@@ -85,28 +106,8 @@ const NavbarOnline = () => {
               {
                 friends.onlineFriends.map((friend) => {
                   return (
-                    <li key={friend._id}>
-                      <Link
-                        to="/"
-                        className="flex justify-center items-center text-text decoration-transparent font-light m-4"
-                      >
-                        <StyledBadge
-                          isonline="true"
-                          overlap="circular"
-                          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                          variant="dot"
-                          className="mr-2"
-                        >
-                          <Avatar
-                            alt="Remy Sharp"
-                            src={friend.profilePic ? friend.profilePic : "https://www.gravatar.com/avatar/"}
-                            style={{ width: 50, height: 50 }}
-                          />
-                        </StyledBadge>
-
-                        <p>{friend.name}</p>
-                      </Link>
-                    </li>
+                    // <PopupInfoProfil user={friend} />
+                    <UserSmallDetail user={friend} key={friend._id} />
                   );
                 })
               }
@@ -119,29 +120,12 @@ const NavbarOnline = () => {
               {friends.offlineFriends.length === 0 && <p>No offline friends</p>}
               {
                 friends.offlineFriends.map((friend) => {
-                  return (
-                    <li key={friend._id}>
-                      <Link
-                        to="/"
-                        className="flex justify-center items-center text-text decoration-transparent font-light m-4"
-                      >
-                        <StyledBadge
-                          isonline="false"
-                          overlap="circular"
-                          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                          variant="dot"
-                          className="mr-2"
-                        >
-                          <Avatar
-                            alt="Remy Sharp"
-                            src={friend.profilePic ? friend.profilePic : "https://www.gravatar.com/avatar/"}
-                            style={{ width: 50, height: 50 }}
-                          />
-                        </StyledBadge>
 
-                        <p>{friend.name}</p>
-                      </Link>
-                    </li>
+                  return (
+                    <PopupInfoProfil user={friend} />
+                    // <div className="flex items-center justify-between w-full" onClick={(e) => handleUserClick(e, friend)} key={friend._id}>
+                    //   <UserSmallDetail userin={friend} key={friend._id} logoonly={false} />
+                    // </div>
                   );
                 })
               }
@@ -149,6 +133,22 @@ const NavbarOnline = () => {
           </div>
         </ul>
       </nav>
+      {/* <Popover
+        id="user-info-popover"
+        open={userInfoVisible}
+        anchorEl={anchorEl}
+        onClose={handlePopoverClose}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+      >
+        <UserInfo userin={userName} setUserInfoVisible={setUserInfoVisible} onClose={handlePopoverClose} />
+      </Popover> */}
     </>
   );
 };
