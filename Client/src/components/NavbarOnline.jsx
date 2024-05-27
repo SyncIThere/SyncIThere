@@ -77,68 +77,75 @@ const NavbarOnline = () => {
   return (
     <>
       <nav className="hidden h-[100vh] md:flex  md: bg-interactiveOpacity border-l border-border w-[300px] overflow-y-scroll">
-        <ul className="mt-10 ml-5">
-          <h2 className="text-2xl">{t("Online")}</h2>
-          <div id="friendsListonline" className="flex flex-col items-center justify-between my-5">
-            {
-              friends.onlineFriends.map((friend) => {
-                return (
-                  <li key={friend._id}>
-                    <Link
-                      to="/"
-                      className="flex justify-center items-center text-text decoration-transparent font-light m-4"
-                    >
-                      <StyledBadge
-                        isonline="true"
-                        overlap="circular"
-                        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                        variant="dot"
-                        className="mr-2"
+        <ul className="w-full">
+          <div className="pt-10 pl-5 pr-5">
+            <h2 className="text-2xl">{t("Online")}</h2>
+            <div id="friendsListonline" className="flex flex-col items-center justify-between my-5">
+              {friends.onlineFriends.length === 0 && <p>No online friends</p>}
+              {
+                friends.onlineFriends.map((friend) => {
+                  return (
+                    <li key={friend._id}>
+                      <Link
+                        to="/"
+                        className="flex justify-center items-center text-text decoration-transparent font-light m-4"
                       >
-                        <Avatar
-                          alt="Remy Sharp"
-                          src={friend.profilePic ? friend.profilePic : "https://www.gravatar.com/avatar/"}
-                          style={{ width: 50, height: 50 }}
-                        />
-                      </StyledBadge>
+                        <StyledBadge
+                          isonline="true"
+                          overlap="circular"
+                          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                          variant="dot"
+                          className="mr-2"
+                        >
+                          <Avatar
+                            alt="Remy Sharp"
+                            src={friend.profilePic ? friend.profilePic : "https://www.gravatar.com/avatar/"}
+                            style={{ width: 50, height: 50 }}
+                          />
+                        </StyledBadge>
 
-                      <p>{friend.name}</p>
-                    </Link>
-                  </li>
-                );
-              })
-            }
+                        <p>{friend.name}</p>
+                      </Link>
+                    </li>
+                  );
+                })
+              }
+            </div>
           </div>
-          <h2 className="text-2xl">{t("Offline")}</h2>
-          <div id="friendsListoffline" className="flex flex-col items-center justify-between my-5">
-            {
-              friends.offlineFriends.map((friend) => {
-                return (
-                  <li key={friend._id}>
-                    <Link
-                      to="/"
-                      className="flex justify-center items-center text-text decoration-transparent font-light m-4"
-                    >
-                      <StyledBadge
-                        isonline="false"
-                        overlap="circular"
-                        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                        variant="dot"
-                        className="mr-2"
+          <div className="w-full border-b border-border "></div>
+          <div className="p-5">
+            <h2 className="text-2xl">{t("Offline")}</h2>
+            <div id="friendsListoffline" className="flex flex-col items-center justify-between my-5">
+              {friends.offlineFriends.length === 0 && <p>No offline friends</p>}
+              {
+                friends.offlineFriends.map((friend) => {
+                  return (
+                    <li key={friend._id}>
+                      <Link
+                        to="/"
+                        className="flex justify-center items-center text-text decoration-transparent font-light m-4"
                       >
-                        <Avatar
-                          alt="Remy Sharp"
-                          src={friend.profilePic ? friend.profilePic : "https://www.gravatar.com/avatar/"}
-                          style={{ width: 50, height: 50 }}
-                        />
-                      </StyledBadge>
+                        <StyledBadge
+                          isonline="false"
+                          overlap="circular"
+                          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                          variant="dot"
+                          className="mr-2"
+                        >
+                          <Avatar
+                            alt="Remy Sharp"
+                            src={friend.profilePic ? friend.profilePic : "https://www.gravatar.com/avatar/"}
+                            style={{ width: 50, height: 50 }}
+                          />
+                        </StyledBadge>
 
-                      <p>{friend.name}</p>
-                    </Link>
-                  </li>
-                );
-              })
-            }
+                        <p>{friend.name}</p>
+                      </Link>
+                    </li>
+                  );
+                })
+              }
+            </div>
           </div>
         </ul>
       </nav>
