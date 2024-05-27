@@ -368,15 +368,16 @@ const getUserInfo = async (req, res) => {
 const getFriends = async (req, res) => {
     try {
 
-        let currentUser = await User.findById(req.user._id.toString()).populate('friends');
+        let currentUser = await User.findById(req.user._id.toString()).populate('friends')
 
         if (!currentUser) {
             return res.status(400).json({ message: 'User not found' });
         }
 
         currentUser.friends.forEach(friend => {
+
             friend.email = undefined;
-            friend.friends = undefined;
+            friend.friends = [...friend.friends].filter(frie => currentUser.friends.map(frie => frie._id.toString()).includes(frie._id.toString()));
             friend.friendRequests = undefined;
             friend.sentRequests = undefined;
             friend.password = undefined;
