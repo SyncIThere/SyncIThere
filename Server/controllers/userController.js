@@ -315,6 +315,16 @@ const getUserInfo = async (req, res) => {
             return res.status(400).json({ message: 'User not found' });
         }
 
+        if (!req.user) {
+            user.email = undefined;
+            user.password = undefined;
+            user.friends = undefined;
+            user.friendRequests = undefined;
+            user.sentRequests = undefined;
+
+            return res.status(200).json(user);
+        }
+
         const currentUser = await User.findById(req.user._id.toString());
 
         if (user._id.toString() === currentUser._id.toString()) {

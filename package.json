@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "NODE_ENV=development nodemon Server/server.js",
     "start": "NODE_ENV=production node Server/server.js",
-    "build": "npm install && npm install --prefix Client && npm run build --prefix Client"
+    "build": "npm install && npm install --prefix Client && npm run build --prefix Client",
+    "webstrator": "npm run build && npm start"
   },
   "type": "module",
   "keywords": [],
