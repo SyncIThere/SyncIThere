@@ -2,10 +2,11 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js"
+    "dev": "NODE_ENV=development nodemon Server/server.js",
+    "start": "NODE_ENV=production node Server/server.js",
+    "build": "npm install && npm install --prefix Client && npm run build --prefix Client"
   },
   "type": "module",
   "keywords": [],
