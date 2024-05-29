@@ -24,12 +24,5 @@ router.get('/getSentFriendRequests', protectRoute, getSentFriendRequests);
 
 router.put('/updateUser', protectRoute, updateUser);
 
-router.get('*', (req, res) => res.status(404).send('404, Page Not Found'));
-router.post('*', (req, res) => res.status(404).send('404, Page Not Found'));
-router.put('*', (req, res) => res.status(404).send('404, Page Not Found'));
-router.delete('*', (req, res) => res.status(404).send('404, Page Not Found'));
-router.patch('*', (req, res) => res.status(404).send('404, Page Not Found'));
-
-
 export default router;
 

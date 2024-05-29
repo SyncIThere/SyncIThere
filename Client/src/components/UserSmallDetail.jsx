@@ -42,7 +42,7 @@ export default function PopupInfoProfil({ userin, logoonly }) {
                     className="flex justify-center items-center text-text decoration-transparent font-light m-4 cursor-pointer"
                 >
                     <StyledBadge
-                        isonline="false"
+                        isonline={userin.status === "online" ? "true" : "false"}
                         overlap="circular"
                         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                         variant="dot"

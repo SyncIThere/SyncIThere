@@ -6841,6 +6841,18 @@ semver@^6.3.1:
   resolved "https://registry.npmjs.org/semver/-/semver-6.3.1.tgz"
   integrity sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==
 
+"server@file:..":
+  version "1.0.0"
+  resolved "file:.."
+  dependencies:
+    bcryptjs "^2.4.3"
+    cloudinary "^2.2.0"
+    cookie-parser "^1.4.6"
+    dotenv "^16.4.5"
+    express "^4.19.2"
+    jsonwebtoken "^9.0.2"
+    mongoose "^8.2.4"
+
 set-function-length@^1.2.1:
   version "1.2.2"
   resolved "https://registry.npmjs.org/set-function-length/-/set-function-length-1.2.2.tgz"

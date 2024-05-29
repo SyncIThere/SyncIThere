@@ -12,7 +12,6 @@ import UserInfo from "./UserInfo";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 
-
 const NavbarOnline = () => {
   const showToast = useShowToast();
   const [isLoading, setIsLoading] = useState(true);
@@ -107,7 +106,9 @@ const NavbarOnline = () => {
                 friends.onlineFriends.map((friend) => {
                   return (
                     // <PopupInfoProfil user={friend} />
-                    <UserSmallDetail user={friend} key={friend._id} />
+                    <div className="flex items-center justify-between w-full" onClick={(e) => handleUserClick(e, friend)} key={friend._id}>
+                      <UserSmallDetail userin={friend} key={friend._id} logoonly={false} />
+                    </div>
                   );
                 })
               }
@@ -120,12 +121,11 @@ const NavbarOnline = () => {
               {friends.offlineFriends.length === 0 && <p>No offline friends</p>}
               {
                 friends.offlineFriends.map((friend) => {
-
                   return (
-                    <PopupInfoProfil user={friend} />
-                    // <div className="flex items-center justify-between w-full" onClick={(e) => handleUserClick(e, friend)} key={friend._id}>
-                    //   <UserSmallDetail userin={friend} key={friend._id} logoonly={false} />
-                    // </div>
+                    // <PopupInfoProfil user={friend} />
+                    <div className="flex items-center justify-between w-full" onClick={(e) => handleUserClick(e, friend)} key={friend._id}>
+                      <UserSmallDetail userin={friend} key={friend._id} logoonly={false} />
+                    </div>
                   );
                 })
               }
@@ -133,7 +133,7 @@ const NavbarOnline = () => {
           </div>
         </ul>
       </nav>
-      {/* <Popover
+      <Popover
         id="user-info-popover"
         open={userInfoVisible}
         anchorEl={anchorEl}
@@ -148,7 +148,7 @@ const NavbarOnline = () => {
         }}
       >
         <UserInfo userin={userName} setUserInfoVisible={setUserInfoVisible} onClose={handlePopoverClose} />
-      </Popover> */}
+      </Popover>
     </>
   );
 };
